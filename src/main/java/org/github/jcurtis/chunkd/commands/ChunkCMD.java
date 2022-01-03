@@ -17,21 +17,28 @@ public class ChunkCMD implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player) {
-            final Player player = (Player) sender;
-
+        if (sender instanceof final Player player) {
             switch (args.length) {
-                case 0:
+                case 0 -> {
                     player.sendMessage(ChatColor.GREEN + "Chunkd " + ChatColor.GRAY + "Created by Jonathan Curtis");
                     player.sendMessage(ChatColor.DARK_GRAY + "You are running v1.0");
-
-                    break;
-                case 1:
-                    // TODO: claim chunk, unclaim chunk
+                }
+                case 1 -> {
                     if (args[0].equals("claim")) {
                         chunkd.chunkManager.claim(player, player.getChunk());
+
+                        return true;
                     }
-                    break;
+                    if (args[0].equals("unclaim")) {
+                        chunkd.chunkManager.unclaim(player, player.getChunk());
+
+                        return true;
+                    }
+                }
+                default -> {
+                    player.sendMessage(ChatColor.DARK_GREEN + "Usage: /claim [claim/unclaim]");
+                    return false;
+                }
             }
         } else {
             sender.sendMessage("Sorry, but this command must be ran in game.");

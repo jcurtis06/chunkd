@@ -1,6 +1,7 @@
 package org.github.jcurtis.chunkd;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.github.jcurtis.chunkd.commands.ChunkCMD;
 import org.github.jcurtis.chunkd.managers.ChunkManager;
 
 public final class Chunkd extends JavaPlugin {
@@ -8,12 +9,13 @@ public final class Chunkd extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
         this.chunkManager = new ChunkManager(this);
+
+        this.getCommand("chunk").setExecutor(new ChunkCMD(this));
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+
     }
 }

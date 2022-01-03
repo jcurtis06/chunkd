@@ -9,6 +9,7 @@ https://github.com/jcurtis06/chunkd
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.github.jcurtis.chunkd.Chunkd;
@@ -38,6 +39,15 @@ public class ChunkManager {
             return c.equals(chunk);
         }
         return false;
+    }
+
+    public Player getOwner(Chunk chunk) {
+        for (UUID u : chunkClaims.keySet()) {
+            if (chunkClaims.get(u).equals(chunk)) {
+                return Bukkit.getPlayer(u);
+            }
+        }
+        return null;
     }
 
     public Collection<Chunk> getPlayersChunks(Player player) {

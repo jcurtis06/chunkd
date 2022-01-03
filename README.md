@@ -5,6 +5,7 @@ This plugin is under development.
 
 ### Planned Features (in order from most to least priority)
 * Claiming and unclaiming chunks
+* Displaying who's chunk you are in
 * Managing player permissions per chunk
 * Chunk names
 * GUI Config

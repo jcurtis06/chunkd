@@ -25,8 +25,7 @@ public class ChunkCMD implements CommandExecutor {
                 }
                 case 1 -> {
                     if (args[0].equals("claim")) {
-                        chunkd.chunkManager.claim(player, player.getChunk());
-
+                        new Claim(chunkd.chunkManager, player, player.getChunk());
                         return true;
                     }
                     if (args[0].equals("unclaim")) {

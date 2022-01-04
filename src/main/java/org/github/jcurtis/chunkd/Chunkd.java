@@ -1,18 +1,18 @@
 package org.github.jcurtis.chunkd;
 
+import com.google.gson.Gson;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.github.jcurtis.chunkd.commands.ChunkCMD;
 import org.github.jcurtis.chunkd.managers.ChunkManager;
-import org.github.jcurtis.chunkd.managers.JsonManager;
 
 public final class Chunkd extends JavaPlugin {
+    public Gson gson;
     public ChunkManager chunkManager;
-    public JsonManager jsonManager;
 
     @Override
     public void onEnable() {
+        this.gson = new Gson();
         this.chunkManager = new ChunkManager(this);
-        this.jsonManager = new JsonManager();
 
         this.getCommand("chunk").setExecutor(new ChunkCMD(this));
     }

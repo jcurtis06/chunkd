@@ -9,6 +9,7 @@ https://github.com/jcurtis06/chunkd
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.gson.Gson;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -59,6 +60,6 @@ public class ChunkManager {
     }
 
     public void saveData() {
-        chunkd.jsonManager.addToFile();
+        chunkd.gson.toJson(chunkClaims);
     }
 }

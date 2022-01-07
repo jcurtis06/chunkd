@@ -1,0 +1,12 @@
+name: Chunkd
+version: '${version}'
+main: org.github.jcurtis.chunkd.Chunkd
+api-version: 1.18
+softdepend: [ dynmap ]
+description: A plugin for claiming chunks
+commands:
+  chunk:
+    aliases:
+      - chunkd
+      - territory
+      - claims

@@ -19,7 +19,9 @@ public class ChangeChunkEvent implements Listener {
         Player player = event.getPlayer();
 
         if (event.getFrom().getChunk() != event.getTo().getChunk()) {
-            if (chunkManager.getOwner(event.getTo().getChunk()) != null) {
+            System.out.println("Player entered a new chunk");
+            if (chunkManager.isOwned(player.getLocation().getChunk())) {
+                System.out.println("Player entered an owned chunk");
                 player.sendMessage(ChatColor.GREEN + "You have entered " + chunkManager.getOwner(event.getTo().getChunk()).getName() + "'s territory.");
             }
         }

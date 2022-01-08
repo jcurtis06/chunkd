@@ -43,7 +43,11 @@ public class ChunkManager {
     }
 
     public Player getOwner(Chunk chunk) {
-        for (UUID u : chunkClaims.keySet()) {
+        if (chunkClaims.containsValue(chunk)) {
+            chunkClaims.
+        }
+
+        for (UUID u : chunkClaims.keys()) {
             if (chunkClaims.get(u).equals(chunk)) {
                 return Bukkit.getPlayer(u);
             }

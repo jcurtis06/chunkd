@@ -1,0 +1,65 @@
+@media (prefers-reduced-motion: no-preference) {
+  .App-title {
+    animation: App-title-bob infinite 10s ease-in-out;
+  }
+}
+
+@media screen and (max-width: 395px) {
+  .App-trees {
+    font-size: 75px;
+  }
+}
+
+@media screen and (max-width: 356px) {
+  .App-trees {
+    font-size: 67px;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: calc(75px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.App-trees {
+  position: absolute;
+}
+
+.App-tagline {
+  font-size: large;
+  color: seagreen;
+}
+
+.App-title {
+  color: seagreen;
+}
+
+a {
+  font-size: 50px;
+  color: aqua;
+}
+
+a:hover {
+  color: blue;
+}
+
+@keyframes App-title-bob {
+  0%,
+  100% {
+    transform: translateY(-30px);
+  }
+  50% {
+    transform: translateY(-50px);
+  }
+}

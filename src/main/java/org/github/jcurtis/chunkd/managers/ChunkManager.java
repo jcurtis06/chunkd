@@ -60,8 +60,4 @@ public class ChunkManager {
     public Collection<Chunk> getAllClaimedChunks() {
         return chunkClaims.values();
     }
-
-    public void saveData() {
-        chunkd.gson.toJson(chunkClaims);
-    }
 }

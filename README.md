@@ -3,10 +3,15 @@
 
 This plugin is under development.
 
+### Minimum Release Features
+*Features that must be done before release*
+* ~~Claiming and unclaiming chunks~~
+* Local chunk data saving
+* ~~Displaying who's chunk you are in~~
+* Chunk co-owners
+* GUI Config
+
 ### Planned Features (in order from most to least priority)
-* Claiming and unclaiming chunks
-* Displaying who's chunk you are in
-* Managing player permissions per chunk
 * Chunk names
 * GUI Config
 * Dynmap Support

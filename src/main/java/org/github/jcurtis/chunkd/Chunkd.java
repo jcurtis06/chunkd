@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.github.jcurtis.chunkd.commands.ChunkCMD;
 import org.github.jcurtis.chunkd.events.ChangeChunkEvent;
+import org.github.jcurtis.chunkd.guis.ChunkManagerGUI;
 import org.github.jcurtis.chunkd.managers.ChunkManager;
 import org.github.jcurtis.chunkd.managers.LocalDataManager;
 
@@ -26,6 +27,7 @@ public final class Chunkd extends JavaPlugin {
         this.getCommand("chunk").setExecutor(new ChunkCMD(this));
 
         this.getServer().getPluginManager().registerEvents(new ChangeChunkEvent(this.chunkManager), this);
+        this.getServer().getPluginManager().registerEvents(new ChunkManagerGUI(this), this);
     }
 
     @Override

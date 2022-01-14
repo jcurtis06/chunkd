@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.github.jcurtis.chunkd.Chunkd;
+import org.github.jcurtis.chunkd.guis.ChunkManagerGUI;
 import org.jetbrains.annotations.NotNull;
 
 public class ChunkCMD implements CommandExecutor {
@@ -31,6 +32,21 @@ public class ChunkCMD implements CommandExecutor {
                     if (args[0].equals("unclaim")) {
                         new Unclaim(chunkd.chunkManager, player, player.getLocation().getChunk());
                         return true;
+                    }
+                    if (args[0].equals("manage")) {
+                        new ChunkManagerGUI(chunkd).open(player);
+                        return true;
+                    }
+                }
+                case 2 -> {
+                    if (args[0].equals("unclaim")) {
+                        chunkd.chunkManager.unclaim(player, player.getLocation().getChunk());
+                    }
+                    if (args[0].equals("rename")) {
+                        player.sendMessage("Please type what you would like to rename this chunk to in the chat:");
+                    }
+                    if (args[0].equals("permissions")) {
+                        player.sendMessage("Coming soon");
                     }
                 }
                 default -> {

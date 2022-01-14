@@ -22,6 +22,8 @@ public class LocalDataManager {
         return this.chunkConfig;
     }
 
+    public File getChunksFile() { return this.chunkConfigFile; }
+
     public void createChunkConfig() {
         chunkConfigFile = new File(chunkd.getDataFolder(), "chunks.yml");
         if (!chunkConfigFile.exists()) {

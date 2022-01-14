@@ -8,6 +8,8 @@ import org.github.jcurtis.chunkd.events.ChangeChunkEvent;
 import org.github.jcurtis.chunkd.managers.ChunkManager;
 import org.github.jcurtis.chunkd.managers.LocalDataManager;
 
+import java.io.IOException;
+
 public final class Chunkd extends JavaPlugin {
     public ChunkManager chunkManager;
     public LocalDataManager ldm;
@@ -19,6 +21,8 @@ public final class Chunkd extends JavaPlugin {
 
         ldm.createChunkConfig();
 
+        chunkManager.loadChunksLocal();
+
         this.getCommand("chunk").setExecutor(new ChunkCMD(this));
 
         this.getServer().getPluginManager().registerEvents(new ChangeChunkEvent(this.chunkManager), this);
@@ -26,6 +30,12 @@ public final class Chunkd extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        saveConfig();
 
+        try {
+            chunkManager.storeChunksLocal();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

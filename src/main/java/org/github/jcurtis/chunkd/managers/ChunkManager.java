@@ -15,6 +15,7 @@ import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.github.jcurtis.chunkd.Chunkd;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -59,5 +60,39 @@ public class ChunkManager {
 
     public Collection<Chunk> getAllClaimedChunks() {
         return chunkClaims.values();
+    }
+
+    public void loadChunksLocal() {
+        if (chunkd.ldm.getChunkConfig().getRoot().getKeys(false) == null) return;
+
+        System.out.println("loading chunks");
+
+        chunkd.ldm.getChunkConfig().getRoot().getKeys(false).forEach(key -> {
+            UUID u = UUID.fromString(key);
+
+            System.out.println("found key " + key);
+
+            chunkd.ldm.getChunkConfig().getConfigurationSection(u.toString()).getKeys(false).forEach(key1 -> {
+                chunkd.ldm.getChunkConfig().getConfigurationSection(u.toString() + "." + key1).getKeys(false).forEach(val -> {
+                    Chunk c = Bukkit.getWorld(chunkd.ldm.getChunkConfig().getString(u + "." + key1 + ".world")).getChunkAt(chunkd.ldm.getChunkConfig().getInt(u + "." + key1 + ".x"), chunkd.ldm.getChunkConfig().getInt(u + "." + key1 + ".z"));
+
+                    chunkClaims.put(u, c);
+                });
+            });
+        });
+    }
+
+    public void storeChunksLocal() throws IOException {
+        for (UUID u : chunkClaims.keys()) {
+            chunkd.ldm.getChunkConfig().createSection(u.toString());
+
+            for (Chunk c : chunkClaims.get(u)) {
+                chunkd.ldm.getChunkConfig().set(u.toString() + "." + c.getX() + c.getZ() + ".x", c.getX());
+                chunkd.ldm.getChunkConfig().set(u.toString() + "." + c.getX() + c.getZ() + ".z", c.getZ());
+                chunkd.ldm.getChunkConfig().set(u.toString() + "." + c.getX() + c.getZ() + ".world", c.getWorld().getName());
+            }
+        }
+
+        chunkd.ldm.getChunkConfig().save(chunkd.ldm.getChunksFile());
     }
 }

@@ -7,7 +7,7 @@ import org.github.jcurtis.chunkd.managers.ChunkManager;
 
 public class Claim {
     public Claim(ChunkManager chunkManager, Player player, Chunk chunk) {
-        if (chunkManager.getOwner(chunk)) {
+        if (chunkManager.getOwner(chunk) != null) {
             player.sendMessage(ChatColor.RED + "This chunk has already been claimed!");
             return;
         }

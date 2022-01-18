@@ -25,8 +25,6 @@ public final class Chunkd extends JavaPlugin {
 
         ldm.createChunkConfig();
 
-        chunkManager.loadChunksLocal();
-
         this.getCommand("chunk").setExecutor(new ChunkCMD(this));
 
         this.getServer().getPluginManager().registerEvents(new ChangeChunkEvent(this.chunkManager), this);

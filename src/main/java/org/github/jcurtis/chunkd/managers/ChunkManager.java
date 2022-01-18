@@ -79,6 +79,8 @@ public class ChunkManager {
     For getting the player who owns the chunk, the chunk, use 'getOwner()'
      */
     public Player getOwner(Chunk chunk) {
+
+
         // get the chunk key
         int chunkKey = chunk.getX() + chunk.getZ();
         // store result in a variable
@@ -87,6 +89,8 @@ public class ChunkManager {
         // start with checking online players
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID pu = player.getUniqueId();
+
+            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()) == null) return null;
 
             if (ldm.getChunkConfig().getConfigurationSection(pu.toString()).contains(String.valueOf(chunkKey))) {
                 return Bukkit.getPlayer(pu);
@@ -106,18 +110,21 @@ public class ChunkManager {
         return null;
     }
 
-    public Collection<Integer> getPlayersChunks(Player player) {
-        Collection<Chunk> chunks;
+    public Collection<Chunk> getPlayersChunks(Player player) {
+        Collection<Chunk> chunks = null;
+        ConfigurationSection cs = ldm.getChunkConfig().getConfigurationSection(player.getUniqueId().toString());
 
+        for (String k : cs.getKeys(false)) {
+            chunks.add(Bukkit.getWorld(cs.getString(k + ".world")).getChunkAt(cs.getInt(k + ".x"), cs.getInt(k + ".z")));
+        }
 
-
-        return ldm.getChunkConfig().getConfigurationSection(player.getUniqueId().toString()).getKeys(false);
+        return chunks;
     }
 
     public Collection<Chunk> getAllClaimedChunks() {
         return chunkClaims.values();
     }
-
+    /*
     public void loadChunksLocal() {
         if (chunkd.ldm.getChunkConfig().getRoot().getKeys(false) == null) return;
 
@@ -137,6 +144,7 @@ public class ChunkManager {
             });
         });
     }
+     */
 
     public void storeChunksLocal() throws IOException {
         for (UUID u : chunkClaims.keys()) {

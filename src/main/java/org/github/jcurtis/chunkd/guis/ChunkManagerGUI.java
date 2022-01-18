@@ -1,5 +1,7 @@
 package org.github.jcurtis.chunkd.guis;
 
+import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -10,6 +12,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.github.jcurtis.chunkd.Chunkd;
+import org.github.jcurtis.chunkd.commands.ChunkPerms;
+import org.github.jcurtis.chunkd.commands.EditName;
+import org.github.jcurtis.chunkd.commands.Unclaim;
 import org.github.jcurtis.chunkd.managers.LocalDataManager;
 
 public class ChunkManagerGUI implements Listener {
@@ -17,7 +22,7 @@ public class ChunkManagerGUI implements Listener {
     private final Chunkd chunkd;
 
     public ChunkManagerGUI(Chunkd chunkd) {
-        this.inv = Bukkit.createInventory(null, 9, "Manage Chunk");
+        this.inv = Bukkit.createInventory(null, 9, Component.text("Manage Chunk"));
         this.chunkd = chunkd;
 
         initItems();
@@ -35,9 +40,7 @@ public class ChunkManagerGUI implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        System.out.println("reached");
-
-        if (!event.getInventory().equals(inv)) return;
+        if (!event.getView().title().equals(Component.text("Manage Chunk"))) return;
 
         event.setCancelled(true);
 
@@ -48,12 +51,13 @@ public class ChunkManagerGUI implements Listener {
         final Player p = (Player) event.getWhoClicked();
 
         if (event.getRawSlot() == 3) {
-            chunkd.chunkManager.unclaim(p, p.getLocation().getChunk());
-            p.sendMessage("You have successfully unclaimed this chunk.");
+            new Unclaim(chunkd.chunkManager, p, p.getLocation().getChunk());
+            event.getInventory().close();
         } else if (event.getRawSlot() == 4) {
-            p.sendMessage("Please type what you would like to rename this chunk to in the chat:");
+            chunkd.editName.run(p, p.getLocation().getChunk());
+            event.getInventory().close();
         } else if (event.getRawSlot() == 5) {
-            p.sendMessage("Coming soon");
+            new ChunkPerms();
         }
     }
 }

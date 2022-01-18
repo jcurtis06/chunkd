@@ -9,9 +9,10 @@ https://github.com/jcurtis06/chunkd
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.gson.Gson;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.github.jcurtis.chunkd.Chunkd;
 
@@ -21,41 +22,96 @@ import java.util.UUID;
 
 public class ChunkManager {
     private final Chunkd chunkd;
+    private final LocalDataManager ldm;
 
+    // these variables will remain until switched over to config-only storage
     private Multimap<UUID, Chunk> chunkClaims = HashMultimap.create();
+    private Multimap<Chunk, String> chunkNames = HashMultimap.create();
 
     public ChunkManager(Chunkd chunkd) {
         this.chunkd = chunkd;
+        this.ldm = chunkd.ldm;
     }
 
+    /*
+    Chunks are stored using a custom config. The format is as follows:
+    uuid.chunkKey.world/x/z/name
+
+    "chunkKey" is just the chunks x combined with the z.
+     */
     public void claim(Player owner, Chunk chunk) {
-        chunkClaims.put(owner.getUniqueId(), chunk);
-    }
+        ConfigurationSection section;
 
-    public void unclaim(Player owner, Chunk chunk) {
-        chunkClaims.remove(owner.getUniqueId(), chunk);
-    }
-
-    public boolean isOwned(Chunk chunk) {
-        for (Chunk c : chunkClaims.values()) {
-            return c.equals(chunk);
+        // check if the player already has config section and take appropriate action
+        if (ldm.getChunkConfig().getConfigurationSection(String.valueOf(owner.getUniqueId())) == null) {
+            section = ldm.getChunkConfig().createSection(owner.getUniqueId().toString());
+        } else {
+            section = ldm.getChunkConfig().getConfigurationSection(String.valueOf(owner.getUniqueId()));
         }
-        return false;
+
+        // get the chunk key
+        int chunkKey = chunk.getX() + chunk.getZ();
+
+        // set world, x, z, and name
+        section.set(String.valueOf(chunkKey) + ".world", chunk.getWorld().toString());
+        section.set(String.valueOf(chunkKey) + ".x", chunk.getX());
+        section.set(String.valueOf(chunkKey) + ".Z", chunk.getZ());
+        section.set(String.valueOf(chunkKey) + ".name", null);
     }
 
+    /*
+    This function *removes* an entry from the chunks.yml file.
+    See above 'claim' definition for information on how data is saved.
+     */
+    public void unclaim(Player owner, Chunk chunk) {
+        // get this player's section
+        ConfigurationSection section = ldm.getChunkConfig().getConfigurationSection(owner.getUniqueId().toString());
+
+        // get this chunk's key
+        int chunkKey = chunk.getX() + chunk.getZ();
+
+        // remove entry
+        section.set(String.valueOf(chunkKey), null);
+    }
+
+    /*
+    'isOwned()' returns true/false depending on whether the chunk is owned
+    For getting the player who owns the chunk, the chunk, use 'getOwner()'
+     */
     public Player getOwner(Chunk chunk) {
-        for (UUID u : chunkClaims.keySet()) {
-            for (Chunk c : chunkClaims.get(u)) {
-                if (c.equals(chunk)) {
-                    return Bukkit.getPlayer(u);
-                }
+        // get the chunk key
+        int chunkKey = chunk.getX() + chunk.getZ();
+        // store result in a variable
+        Player owner = null;
+
+        // start with checking online players
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            UUID pu = player.getUniqueId();
+
+            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()).contains(String.valueOf(chunkKey))) {
+                return Bukkit.getPlayer(pu);
             }
         }
+
+        // then check offline players
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            UUID pu = player.getUniqueId();
+
+            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()).contains(String.valueOf(chunkKey))) {
+                return Bukkit.getPlayer(pu);
+            }
+        }
+
+        // no one owns it, return null
         return null;
     }
 
-    public Collection<Chunk> getPlayersChunks(Player player) {
-        return chunkClaims.get(player.getUniqueId());
+    public Collection<Integer> getPlayersChunks(Player player) {
+        Collection<Chunk> chunks;
+
+
+
+        return ldm.getChunkConfig().getConfigurationSection(player.getUniqueId().toString()).getKeys(false);
     }
 
     public Collection<Chunk> getAllClaimedChunks() {

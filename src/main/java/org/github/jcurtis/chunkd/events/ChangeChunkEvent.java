@@ -21,7 +21,12 @@ public class ChangeChunkEvent implements Listener {
         if (event.getFrom().getChunk() != event.getTo().getChunk()) {
             if (chunkManager.getOwner(event.getTo().getChunk()) != null) {
                 if (chunkManager.getOwner(event.getTo().getChunk()) != chunkManager.getOwner(event.getFrom().getChunk())) {
-                    player.sendMessage(ChatColor.GREEN + "You have entered " + chunkManager.getOwner(event.getTo().getChunk()).getName() + "'s territory.");
+                    if (chunkManager.getChunkName(chunkManager.getOwner(event.getTo().getChunk()), event.getTo().getChunk()) != null) {
+                        player.sendMessage(ChatColor.GREEN + "Welcome to " + chunkManager.getChunkName(chunkManager.getOwner(event.getTo().getChunk()), event.getTo().getChunk()) + ".");
+                        player.sendMessage(ChatColor.GREEN + "Owner: " + chunkManager.getOwner(event.getTo().getChunk()).getName());
+                    } else {
+                        player.sendMessage(ChatColor.GREEN + "You have entered " + chunkManager.getOwner(event.getTo().getChunk()).getName() + "'s territory.");
+                    }
                 }
             }
         }

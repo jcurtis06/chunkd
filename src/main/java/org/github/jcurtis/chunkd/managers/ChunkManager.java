@@ -10,6 +10,7 @@ https://github.com/jcurtis06/chunkd
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,15 +22,9 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class ChunkManager {
-    private final Chunkd chunkd;
     private final LocalDataManager ldm;
 
-    // these variables will remain until switched over to config-only storage
-    private Multimap<UUID, Chunk> chunkClaims = HashMultimap.create();
-    private Multimap<Chunk, String> chunkNames = HashMultimap.create();
-
     public ChunkManager(Chunkd chunkd) {
-        this.chunkd = chunkd;
         this.ldm = chunkd.ldm;
     }
 
@@ -50,13 +45,20 @@ public class ChunkManager {
         }
 
         // get the chunk key
-        int chunkKey = chunk.getX() + chunk.getZ();
+        String chunkKey = getKey(chunk);
 
         // set world, x, z, and name
-        section.set(String.valueOf(chunkKey) + ".world", chunk.getWorld().toString());
-        section.set(String.valueOf(chunkKey) + ".x", chunk.getX());
-        section.set(String.valueOf(chunkKey) + ".Z", chunk.getZ());
-        section.set(String.valueOf(chunkKey) + ".name", null);
+        section.set(chunkKey + ".world", chunk.getWorld().toString());
+        section.set(chunkKey + ".x", chunk.getX());
+        section.set(chunkKey + ".z", chunk.getZ());
+        section.set(chunkKey + ".name", null);
+
+        // save the config
+        try {
+            ldm.getChunkConfig().save(ldm.getChunksFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -67,11 +69,15 @@ public class ChunkManager {
         // get this player's section
         ConfigurationSection section = ldm.getChunkConfig().getConfigurationSection(owner.getUniqueId().toString());
 
-        // get this chunk's key
-        int chunkKey = chunk.getX() + chunk.getZ();
-
         // remove entry
-        section.set(String.valueOf(chunkKey), null);
+        section.set(getKey(chunk), null);
+
+        // save
+        try {
+            ldm.getChunkConfig().save(ldm.getChunksFile());
+        } catch (IOException e) {
+            owner.sendMessage(ChatColor.RED + "Something went wrong.");
+        }
     }
 
     /*
@@ -79,20 +85,13 @@ public class ChunkManager {
     For getting the player who owns the chunk, the chunk, use 'getOwner()'
      */
     public Player getOwner(Chunk chunk) {
-
-
-        // get the chunk key
-        int chunkKey = chunk.getX() + chunk.getZ();
-        // store result in a variable
-        Player owner = null;
-
         // start with checking online players
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID pu = player.getUniqueId();
 
             if (ldm.getChunkConfig().getConfigurationSection(pu.toString()) == null) return null;
 
-            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()).contains(String.valueOf(chunkKey))) {
+            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()).contains(getKey(chunk))) {
                 return Bukkit.getPlayer(pu);
             }
         }
@@ -101,7 +100,9 @@ public class ChunkManager {
         for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
             UUID pu = player.getUniqueId();
 
-            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()).contains(String.valueOf(chunkKey))) {
+            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()) == null) return null;
+
+            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()).contains(getKey(chunk))) {
                 return Bukkit.getPlayer(pu);
             }
         }
@@ -110,53 +111,24 @@ public class ChunkManager {
         return null;
     }
 
-    public Collection<Chunk> getPlayersChunks(Player player) {
-        Collection<Chunk> chunks = null;
-        ConfigurationSection cs = ldm.getChunkConfig().getConfigurationSection(player.getUniqueId().toString());
+    public void updateChunkName(Player owner, Chunk chunk, String name) {
+        UUID ou = owner.getUniqueId();
 
-        for (String k : cs.getKeys(false)) {
-            chunks.add(Bukkit.getWorld(cs.getString(k + ".world")).getChunkAt(cs.getInt(k + ".x"), cs.getInt(k + ".z")));
+        ldm.getChunkConfig().set(ou + "." + getKey(chunk) + ".name", name);
+        try {
+            ldm.getChunkConfig().save(ldm.getChunksFile());
+        } catch (IOException e) {
+            owner.sendMessage(ChatColor.RED + "Something went wrong.");
         }
-
-        return chunks;
     }
 
-    public Collection<Chunk> getAllClaimedChunks() {
-        return chunkClaims.values();
+    public String getChunkName(Player owner, Chunk chunk) {
+        String ou = owner.getUniqueId().toString();
+
+        return ldm.getChunkConfig().getString(ou + "." + getKey(chunk) + ".name");
     }
-    /*
-    public void loadChunksLocal() {
-        if (chunkd.ldm.getChunkConfig().getRoot().getKeys(false) == null) return;
 
-        System.out.println("loading chunks");
-
-        chunkd.ldm.getChunkConfig().getRoot().getKeys(false).forEach(key -> {
-            UUID u = UUID.fromString(key);
-
-            System.out.println("found key " + key);
-
-            chunkd.ldm.getChunkConfig().getConfigurationSection(u.toString()).getKeys(false).forEach(key1 -> {
-                chunkd.ldm.getChunkConfig().getConfigurationSection(u.toString() + "." + key1).getKeys(false).forEach(val -> {
-                    Chunk c = Bukkit.getWorld(chunkd.ldm.getChunkConfig().getString(u + "." + key1 + ".world")).getChunkAt(chunkd.ldm.getChunkConfig().getInt(u + "." + key1 + ".x"), chunkd.ldm.getChunkConfig().getInt(u + "." + key1 + ".z"));
-
-                    chunkClaims.put(u, c);
-                });
-            });
-        });
-    }
-     */
-
-    public void storeChunksLocal() throws IOException {
-        for (UUID u : chunkClaims.keys()) {
-            chunkd.ldm.getChunkConfig().createSection(u.toString());
-
-            for (Chunk c : chunkClaims.get(u)) {
-                chunkd.ldm.getChunkConfig().set(u.toString() + "." + c.getX() + c.getZ() + ".x", c.getX());
-                chunkd.ldm.getChunkConfig().set(u.toString() + "." + c.getX() + c.getZ() + ".z", c.getZ());
-                chunkd.ldm.getChunkConfig().set(u.toString() + "." + c.getX() + c.getZ() + ".world", c.getWorld().getName());
-            }
-        }
-
-        chunkd.ldm.getChunkConfig().save(chunkd.ldm.getChunksFile());
+    public String getKey(Chunk chunk) {
+        return String.valueOf(chunk.getX()) + "" + String.valueOf(chunk.getZ());
     }
 }

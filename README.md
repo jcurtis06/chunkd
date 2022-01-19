@@ -10,10 +10,9 @@ This plugin is under development.
 * ~~Displaying who's chunk you are in~~
 * Chunk co-owners
 * GUI Config
+* ~~Chunk names~~
 
 ### Planned Features (in order from most to least priority)
-* Chunk names
-* GUI Config
 * Dynmap Support
 * SQL Support
 * In-game map

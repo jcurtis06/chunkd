@@ -11,6 +11,7 @@ This plugin is under development.
 * Chunk co-owners
 * GUI Config
 * ~~Chunk names~~
+* Economy Support
 
 ### Planned Features (in order from most to least priority)
 * Dynmap Support

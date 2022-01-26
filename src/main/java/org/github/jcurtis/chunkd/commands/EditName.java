@@ -47,7 +47,7 @@ public class EditName implements Listener {
 
                     String input = event.getMessage();
 
-                    chunkManager.updateChunkName(sender, sender.getLocation().getChunk(), input);
+                    chunkManager.updateChunkName(sender.getLocation().getChunk(), input);
 
                     sender.sendMessage(ChatColor.GREEN + "You have renamed this chunk to " + input);
 

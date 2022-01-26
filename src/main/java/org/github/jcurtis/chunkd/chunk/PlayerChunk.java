@@ -18,6 +18,9 @@ public class PlayerChunk {
     private ArrayList<UUID> coArray;
     private ArrayList<UUID> interactArray;
 
+    // other info
+    private String name;
+
     public PlayerChunk(Chunks chunks, Chunk chunk, Player owner) {
         this.chunk = chunk;
         this.x = chunk.getX();
@@ -38,6 +41,10 @@ public class PlayerChunk {
     public UUID getOwner() {
         return this.owner;
     }
+
+    public String getName() { return this.name; }
+
+    public void updateName(String name) { this.name = name; }
 
     public ArrayList<UUID> getCoArray() {
         return this.coArray;

@@ -62,21 +62,12 @@ public class ChunkManager {
         return Bukkit.getPlayer(getPlayerChunk(chunk).getOwner());
     }
 
-    public void updateChunkName(Player owner, Chunk chunk, String name) {
-        UUID ou = owner.getUniqueId();
-
-        ldm.getChunkConfig().set(ou + "." + getKey(chunk) + ".name", name);
-        try {
-            ldm.getChunkConfig().save(ldm.getChunksFile());
-        } catch (IOException e) {
-            owner.sendMessage(ChatColor.RED + "Something went wrong.");
-        }
+    public void updateChunkName(Chunk chunk, String name) {
+        getPlayerChunk(chunk).updateName(name);
     }
 
-    public String getChunkName(Player owner, Chunk chunk) {
-        String ou = owner.getUniqueId().toString();
-
-        return ldm.getChunkConfig().getString(ou + "." + getKey(chunk) + ".name");
+    public String getChunkName(Chunk chunk) {
+        return getPlayerChunk(chunk).getName();
     }
 
     public void setPermission(Chunk chunk, Player player, Player owner, String perm) {

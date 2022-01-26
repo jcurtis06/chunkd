@@ -5,13 +5,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.github.jcurtis.chunkd.Chunkd;
 import org.github.jcurtis.chunkd.managers.ChunkManager;
 
 public class ChangeChunkEvent implements Listener {
     private final ChunkManager chunkManager;
+    private final Chunkd chunkd;
 
-    public ChangeChunkEvent(ChunkManager chunkManager) {
-        this.chunkManager = chunkManager;
+    public ChangeChunkEvent(Chunkd chunkd) {
+        this.chunkManager = chunkd.chunkManager;
+        this.chunkd = chunkd;
     }
 
     @EventHandler

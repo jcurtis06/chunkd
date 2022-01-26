@@ -16,6 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.github.jcurtis.chunkd.Chunkd;
+import org.github.jcurtis.chunkd.chunk.PlayerChunk;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -23,9 +24,11 @@ import java.util.UUID;
 
 public class ChunkManager {
     private final LocalDataManager ldm;
+    private final Chunkd chunkd;
 
     public ChunkManager(Chunkd chunkd) {
         this.ldm = chunkd.ldm;
+        this.chunkd = chunkd;
     }
 
     /*
@@ -35,6 +38,9 @@ public class ChunkManager {
     "chunkKey" is just the chunks x combined with the z.
      */
     public void claim(Player owner, Chunk chunk) {
+        new PlayerChunk(chunkd.chunks, chunk, owner);
+
+        /*
         ConfigurationSection section;
 
         // check if the player already has config section and take appropriate action
@@ -52,6 +58,7 @@ public class ChunkManager {
         section.set(chunkKey + ".x", chunk.getX());
         section.set(chunkKey + ".z", chunk.getZ());
         section.set(chunkKey + ".name", null);
+        section.createSection(chunkKey + ".permissions");
 
         // save the config
         try {
@@ -59,13 +66,23 @@ public class ChunkManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+         */
     }
 
     /*
     This function *removes* an entry from the chunks.yml file.
     See above 'claim' definition for information on how data is saved.
      */
-    public void unclaim(Player owner, Chunk chunk) {
+    public boolean unclaim(Player owner, Chunk chunk) {
+        for (PlayerChunk pc : chunkd.chunks.get()) {
+            if (pc.getChunk() == chunk) {
+                return chunkd.chunks.del(pc);
+            }
+        }
+
+        return false;
+
+        /*
         // get this player's section
         ConfigurationSection section = ldm.getChunkConfig().getConfigurationSection(owner.getUniqueId().toString());
 
@@ -78,6 +95,7 @@ public class ChunkManager {
         } catch (IOException e) {
             owner.sendMessage(ChatColor.RED + "Something went wrong.");
         }
+         */
     }
 
     /*
@@ -85,6 +103,17 @@ public class ChunkManager {
     For getting the player who owns the chunk, the chunk, use 'getOwner()'
      */
     public Player getOwner(Chunk chunk) {
+        if (chunkd.chunks.get() == null) return null;
+
+        for (PlayerChunk pc : chunkd.chunks.get()) {
+            if (pc.getChunk() == chunk) {
+                return Bukkit.getPlayer(pc.getOwner());
+            }
+        }
+
+        return null;
+
+        /*
         // start with checking online players
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID pu = player.getUniqueId();
@@ -109,6 +138,7 @@ public class ChunkManager {
 
         // no one owns it, return null
         return null;
+         */
     }
 
     public void updateChunkName(Player owner, Chunk chunk, String name) {
@@ -126,6 +156,22 @@ public class ChunkManager {
         String ou = owner.getUniqueId().toString();
 
         return ldm.getChunkConfig().getString(ou + "." + getKey(chunk) + ".name");
+    }
+
+    public void setPermission(Chunk chunk, Player player, Player owner, String perm) {
+        /*
+        Valid perms:
+        - owner
+        - co
+        - build
+        - break
+        - interact
+
+        to set multiple perms, seperate with spaces
+        (e.x: setPermission(chunk, player, owner, "build break");
+         */
+
+        ldm.getChunkConfig().set(owner.getUniqueId().toString() + "." + getKey(chunk) + ".permissions." + player.getUniqueId() + "." + perm, true);
     }
 
     public String getKey(Chunk chunk) {

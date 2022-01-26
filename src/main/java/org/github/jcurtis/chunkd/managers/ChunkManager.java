@@ -39,34 +39,6 @@ public class ChunkManager {
      */
     public void claim(Player owner, Chunk chunk) {
         new PlayerChunk(chunkd.chunks, chunk, owner);
-
-        /*
-        ConfigurationSection section;
-
-        // check if the player already has config section and take appropriate action
-        if (ldm.getChunkConfig().getConfigurationSection(String.valueOf(owner.getUniqueId())) == null) {
-            section = ldm.getChunkConfig().createSection(owner.getUniqueId().toString());
-        } else {
-            section = ldm.getChunkConfig().getConfigurationSection(String.valueOf(owner.getUniqueId()));
-        }
-
-        // get the chunk key
-        String chunkKey = getKey(chunk);
-
-        // set world, x, z, and name
-        section.set(chunkKey + ".world", chunk.getWorld().toString());
-        section.set(chunkKey + ".x", chunk.getX());
-        section.set(chunkKey + ".z", chunk.getZ());
-        section.set(chunkKey + ".name", null);
-        section.createSection(chunkKey + ".permissions");
-
-        // save the config
-        try {
-            ldm.getChunkConfig().save(ldm.getChunksFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-         */
     }
 
     /*
@@ -81,21 +53,6 @@ public class ChunkManager {
         }
 
         return false;
-
-        /*
-        // get this player's section
-        ConfigurationSection section = ldm.getChunkConfig().getConfigurationSection(owner.getUniqueId().toString());
-
-        // remove entry
-        section.set(getKey(chunk), null);
-
-        // save
-        try {
-            ldm.getChunkConfig().save(ldm.getChunksFile());
-        } catch (IOException e) {
-            owner.sendMessage(ChatColor.RED + "Something went wrong.");
-        }
-         */
     }
 
     /*
@@ -112,33 +69,6 @@ public class ChunkManager {
         }
 
         return null;
-
-        /*
-        // start with checking online players
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            UUID pu = player.getUniqueId();
-
-            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()) == null) return null;
-
-            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()).contains(getKey(chunk))) {
-                return Bukkit.getPlayer(pu);
-            }
-        }
-
-        // then check offline players
-        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-            UUID pu = player.getUniqueId();
-
-            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()) == null) return null;
-
-            if (ldm.getChunkConfig().getConfigurationSection(pu.toString()).contains(getKey(chunk))) {
-                return Bukkit.getPlayer(pu);
-            }
-        }
-
-        // no one owns it, return null
-        return null;
-         */
     }
 
     public void updateChunkName(Player owner, Chunk chunk, String name) {
@@ -175,6 +105,6 @@ public class ChunkManager {
     }
 
     public String getKey(Chunk chunk) {
-        return String.valueOf(chunk.getX()) + "" + String.valueOf(chunk.getZ());
+        return chunk.getX() + "" + chunk.getZ();
     }
 }

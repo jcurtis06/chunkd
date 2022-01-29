@@ -11,6 +11,8 @@ public class PlayerChunk {
     private final int x;
     private final int z;
 
+    private final String key;
+
     private final Chunk chunk;
 
     // perms
@@ -26,6 +28,7 @@ public class PlayerChunk {
         this.x = chunk.getX();
         this.z = chunk.getZ();
         this.owner = owner.getUniqueId();
+        this.key = this.x + "" + this.z;
 
         chunks.add(this);
     }
@@ -35,7 +38,7 @@ public class PlayerChunk {
     }
 
     public String chunkKey() {
-        return this.x + "" + this.z;
+        return this.key;
     }
 
     public UUID getOwner() {

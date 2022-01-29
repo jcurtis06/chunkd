@@ -22,13 +22,15 @@ public final class Chunkd extends JavaPlugin {
     @Override
     public void onEnable() {
         this.ldm = new LocalDataManager(this);
-        this.chunks = new Chunks();
+        this.chunks = new Chunks(this);
         this.chunkManager = new ChunkManager(this);
         this.editName = new EditName(chunkManager);
 
         ldm.createChunkConfig();
 
-        System.out.println(ldm.toString());
+        System.out.println(ldm.getChunkConfig().get("chunks"));
+
+        chunks.load();
 
         this.getCommand("chunk").setExecutor(new ChunkCMD(this));
 
@@ -41,6 +43,7 @@ public final class Chunkd extends JavaPlugin {
     public void onDisable() {
         saveConfig();
         try {
+            chunks.save();
             ldm.getChunkConfig().save(ldm.getChunksFile());
         } catch (IOException e) {
             e.printStackTrace();

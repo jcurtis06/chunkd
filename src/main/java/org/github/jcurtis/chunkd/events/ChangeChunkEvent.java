@@ -19,6 +19,8 @@ public class ChangeChunkEvent implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        if (chunkd.chunkManager.getPlayerChunk(event.getTo().getChunk()) == null) return;
+
         Player player = event.getPlayer();
 
         if (event.getFrom().getChunk() != event.getTo().getChunk()) {

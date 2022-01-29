@@ -46,6 +46,8 @@ public class ChunkManager {
     See above 'claim' definition for information on how data is saved.
      */
     public boolean unclaim(Player owner, Chunk chunk) {
+        if (getPlayerChunk(chunk) == null) return false;
+
         if (chunkd.chunks.get().contains(getPlayerChunk(chunk)) && getPlayerChunk(chunk).getOwner() == owner.getUniqueId()) {
             chunkd.chunks.del(getPlayerChunk(chunk));
             return true;
@@ -59,6 +61,8 @@ public class ChunkManager {
     For getting the player who owns the chunk, the chunk, use 'getOwner()'
      */
     public Player getOwner(Chunk chunk) {
+        if (getPlayerChunk(chunk) == null) return null;
+
         return Bukkit.getPlayer(getPlayerChunk(chunk).getOwner());
     }
 
@@ -93,6 +97,15 @@ public class ChunkManager {
     public PlayerChunk getPlayerChunk(Chunk chunk) {
         for (PlayerChunk pc : chunkd.chunks.get()) {
             if (pc.getChunk() == chunk) {
+                return pc;
+            }
+        }
+        return null;
+    }
+
+    public PlayerChunk getPlayerChunk(String key) {
+        for (PlayerChunk pc : chunkd.chunks.get()) {
+            if (pc.chunkKey().equals(key)) {
                 return pc;
             }
         }

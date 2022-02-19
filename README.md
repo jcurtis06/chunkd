@@ -8,7 +8,7 @@ This plugin is under development.
 * ~~Claiming and unclaiming chunks~~
 * ~~Local chunk data saving~~
 * ~~Displaying who's chunk you are in~~
-* Chunk co-owners
+* Advanced chunk permissions
 * GUI Config
 * ~~Chunk names~~
 * Economy Support

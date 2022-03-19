@@ -2,8 +2,10 @@ package org.github.jcurtis.chunkd;
 
 import com.google.gson.Gson;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.github.jcurtis.chunkd.chunk.Chunks;
+import org.github.jcurtis.chunkd.chunk.PlayerChunk;
 import org.github.jcurtis.chunkd.commands.ChunkCMD;
 import org.github.jcurtis.chunkd.commands.EditName;
 import org.github.jcurtis.chunkd.events.ChangeChunkEvent;
@@ -30,13 +32,23 @@ public final class Chunkd extends JavaPlugin {
 
         System.out.println(ldm.getChunkConfig().get("chunks"));
 
-        chunks.load();
+        try {
+            chunks.load();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         this.getCommand("chunk").setExecutor(new ChunkCMD(this));
 
         this.getServer().getPluginManager().registerEvents(new ChangeChunkEvent(this), this);
         this.getServer().getPluginManager().registerEvents(new ChunkManagerGUI(this), this);
         this.getServer().getPluginManager().registerEvents(editName, this);
+
+        try {
+            chunks.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -44,7 +56,6 @@ public final class Chunkd extends JavaPlugin {
         saveConfig();
         try {
             chunks.save();
-            ldm.getChunkConfig().save(ldm.getChunksFile());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -96,7 +96,7 @@ public class ChunkManager {
 
     public PlayerChunk getPlayerChunk(Chunk chunk) {
         for (PlayerChunk pc : chunkd.chunks.get()) {
-            if (pc.getChunk() == chunk) {
+            if (pc != null && pc.getChunk() == chunk) {
                 return pc;
             }
         }

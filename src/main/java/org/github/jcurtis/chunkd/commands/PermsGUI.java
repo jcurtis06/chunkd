@@ -1,7 +1,7 @@
 package org.github.jcurtis.chunkd.commands;
 
-public class ChunkPerms {
-    public ChunkPerms() {
+public class PermsGUI {
+    public PermsGUI() {
 
     }
 }

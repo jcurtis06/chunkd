@@ -34,19 +34,16 @@ public class ChunkCMD implements CommandExecutor {
                         return true;
                     }
                     if (args[0].equals("manage")) {
-                        new ChunkManagerGUI(chunkd).open(player);
-                        return true;
-                    }
-                }
-                case 2 -> {
-                    if (args[0].equals("unclaim")) {
-                        chunkd.chunkManager.unclaim(player, player.getLocation().getChunk());
-                    }
-                    if (args[0].equals("rename")) {
-                        player.sendMessage("Please type what you would like to rename this chunk to in the chat:");
-                    }
-                    if (args[0].equals("permissions")) {
-                        player.sendMessage("Coming soon");
+                        if (chunkd.chunks.get().contains(chunkd.chunkManager.getPlayerChunk(player.getLocation().getChunk()))) {
+                            if (chunkd.chunkManager.getOwner(player.getLocation().getChunk()).equals(player)) {
+                                new ChunkManagerGUI(chunkd).open(player);
+                                return true;
+                            } else {
+                                player.sendMessage("You do not have permission to manage this chunk!");
+                            }
+                        } else {
+                            player.sendMessage("You do not have permission to manage this chunk!");
+                        }
                     }
                 }
                 default -> {

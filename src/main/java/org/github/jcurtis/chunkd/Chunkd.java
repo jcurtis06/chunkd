@@ -25,7 +25,7 @@ public final class Chunkd extends JavaPlugin {
     @Override
     public void onEnable() {
         this.ldm = new LocalDataManager(this);
-        this.chunks = new Chunks(this);
+        this.chunks = new Chunks();
         this.chunkManager = new ChunkManager(this);
         this.editName = new EditName(chunkManager);
 

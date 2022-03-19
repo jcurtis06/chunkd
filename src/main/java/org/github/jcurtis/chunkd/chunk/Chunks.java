@@ -12,12 +12,6 @@ public class Chunks {
         return this.playerChunks;
     }
 
-    private final Chunkd chunkd;
-
-    public Chunks(Chunkd chunkd) {
-        this.chunkd = chunkd;
-    }
-
     public boolean add(PlayerChunk playerChunk) {
         if (playerChunks.contains(playerChunk)) {
             return false;

@@ -3,9 +3,10 @@ package org.github.jcurtis.chunkd.permissions;
 import org.bukkit.entity.Player;
 import org.github.jcurtis.chunkd.chunk.PlayerChunk;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PlayerPermission {
+public class PlayerPermission implements Serializable {
     private final PlayerChunk playerChunk;
     private final Player player;
 

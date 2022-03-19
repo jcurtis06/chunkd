@@ -16,6 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.github.jcurtis.chunkd.Chunkd;
+import org.github.jcurtis.chunkd.chunk.Chunks;
 import org.github.jcurtis.chunkd.chunk.PlayerChunk;
 
 import java.io.IOException;
@@ -24,11 +25,11 @@ import java.util.UUID;
 
 public class ChunkManager {
     private final LocalDataManager ldm;
-    private final Chunkd chunkd;
+    private final Chunks chunks;
 
     public ChunkManager(Chunkd chunkd) {
         this.ldm = chunkd.ldm;
-        this.chunkd = chunkd;
+        this.chunks = chunkd.chunks;
     }
 
     /*
@@ -38,7 +39,7 @@ public class ChunkManager {
     "chunkKey" is just the chunks x combined with the z.
      */
     public void claim(Player owner, Chunk chunk) {
-        new PlayerChunk(chunkd.chunks, chunk, owner);
+        new PlayerChunk(chunks, chunk, owner);
     }
 
     /*
@@ -48,8 +49,11 @@ public class ChunkManager {
     public boolean unclaim(Player owner, Chunk chunk) {
         if (getPlayerChunk(chunk) == null) return false;
 
-        if (chunkd.chunks.get().contains(getPlayerChunk(chunk)) && getPlayerChunk(chunk).getOwner() == owner.getUniqueId()) {
-            chunkd.chunks.del(getPlayerChunk(chunk));
+        System.out.println(getPlayerChunk(chunk).getOwner());
+        System.out.println(owner.getUniqueId());
+        System.out.println(getPlayerChunk(chunk).getOwner().equals(owner.getUniqueId()));
+        if (chunks.get().contains(getPlayerChunk(chunk)) && getPlayerChunk(chunk).getOwner().equals(owner.getUniqueId())) {
+            chunks.del(getPlayerChunk(chunk));
             return true;
         } else {
             return false;
@@ -62,7 +66,6 @@ public class ChunkManager {
      */
     public Player getOwner(Chunk chunk) {
         if (getPlayerChunk(chunk) == null) return null;
-
         return Bukkit.getPlayer(getPlayerChunk(chunk).getOwner());
     }
 
@@ -95,7 +98,7 @@ public class ChunkManager {
     }
 
     public PlayerChunk getPlayerChunk(Chunk chunk) {
-        for (PlayerChunk pc : chunkd.chunks.get()) {
+        for (PlayerChunk pc : chunks.get()) {
             if (pc != null && pc.getChunk() == chunk) {
                 return pc;
             }
@@ -104,7 +107,7 @@ public class ChunkManager {
     }
 
     public PlayerChunk getPlayerChunk(String key) {
-        for (PlayerChunk pc : chunkd.chunks.get()) {
+        for (PlayerChunk pc : chunks.get()) {
             if (pc.chunkKey().equals(key)) {
                 return pc;
             }

@@ -1,13 +1,9 @@
 package org.github.jcurtis.chunkd.chunk;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.entity.Player;
 import org.github.jcurtis.chunkd.Chunkd;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class Chunks {
     private ArrayList<PlayerChunk> playerChunks = new ArrayList<>();
@@ -31,12 +27,9 @@ public class Chunks {
         }
     }
 
-    public boolean del(PlayerChunk playerChunk) {
+    public void del(PlayerChunk playerChunk) {
         if (playerChunks.contains(playerChunk)) {
             playerChunks.remove(playerChunk);
-            return true;
-        } else {
-            return false;
         }
     }
 

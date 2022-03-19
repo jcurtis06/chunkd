@@ -14,6 +14,7 @@ import org.github.jcurtis.chunkd.managers.ChunkManager;
 import org.github.jcurtis.chunkd.managers.LocalDataManager;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 public final class Chunkd extends JavaPlugin {
     public ChunkManager chunkManager;
@@ -35,7 +36,7 @@ public final class Chunkd extends JavaPlugin {
         try {
             chunks.load();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.FINE, "Successfully loaded " + chunks.get().size() + " chunks");
         }
 
         this.getCommand("chunk").setExecutor(new ChunkCMD(this));
@@ -57,7 +58,7 @@ public final class Chunkd extends JavaPlugin {
         try {
             chunks.save();
         } catch (IOException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.FINE, "Successfully saved " + chunks.get().size() + " chunks");
         }
     }
 }

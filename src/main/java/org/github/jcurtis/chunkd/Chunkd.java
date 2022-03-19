@@ -10,6 +10,8 @@ import org.github.jcurtis.chunkd.commands.ChunkCMD;
 import org.github.jcurtis.chunkd.commands.EditName;
 import org.github.jcurtis.chunkd.events.ChangeChunkEvent;
 import org.github.jcurtis.chunkd.guis.ChunkManagerGUI;
+import org.github.jcurtis.chunkd.guis.PermsManagerGUI;
+import org.github.jcurtis.chunkd.guis.PlayerManagerGUI;
 import org.github.jcurtis.chunkd.managers.ChunkManager;
 import org.github.jcurtis.chunkd.managers.LocalDataManager;
 
@@ -43,6 +45,8 @@ public final class Chunkd extends JavaPlugin {
 
         this.getServer().getPluginManager().registerEvents(new ChangeChunkEvent(this), this);
         this.getServer().getPluginManager().registerEvents(new ChunkManagerGUI(this), this);
+        this.getServer().getPluginManager().registerEvents(new PermsManagerGUI(this), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerManagerGUI(), this);
         this.getServer().getPluginManager().registerEvents(editName, this);
 
         try {
